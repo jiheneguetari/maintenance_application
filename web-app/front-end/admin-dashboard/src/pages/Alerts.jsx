@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Layout from "../components/Layout";
-import axios from "axios";
+import axios from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Alerts() {
   const [alerts, setAlerts] = useState([]);
+  const { admin } = useContext(AuthContext);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/alerts")
-      .then(res => setAlerts(res.data))
-      .catch(console.error);
-  }, []);
+    axios.get("/alerts", {
+      headers: { "x-auth-token": admin?.token }
+    })
+    .then(res => setAlerts(res.data))
+    .catch(console.error);
+  }, [admin]);
 
   return (
     <Layout>

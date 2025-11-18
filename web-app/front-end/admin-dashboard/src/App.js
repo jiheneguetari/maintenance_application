@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Machines from "./pages/Machines";
@@ -8,18 +9,78 @@ import Technicians from "./pages/Technicians";
 import Alerts from "./pages/Alerts";
 import Reports from "./pages/Reports";
 
+import PrivateRoute from "./utils/PrivateRoute";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/machines" element={<Machines />} />
-        <Route path="/machines/add" element={<AddMachine />} />
-        <Route path="/machines/edit/:id" element={<EditMachine />} />
-        <Route path="/technicians" element={<Technicians />} />
-        <Route path="/alerts" element={<Alerts />} />
-        <Route path="/reports" element={<Reports />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/machines"
+          element={
+            <PrivateRoute>
+              <Machines />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/machines/add"
+          element={
+            <PrivateRoute>
+              <AddMachine />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/machines/edit/:id"
+          element={
+            <PrivateRoute>
+              <EditMachine />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/technicians"
+          element={
+            <PrivateRoute>
+              <Technicians />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/alerts"
+          element={
+            <PrivateRoute>
+              <Alerts />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/reports"
+          element={
+            <PrivateRoute>
+              <Reports />
+            </PrivateRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );

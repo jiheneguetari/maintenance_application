@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Layout from "../components/Layout";
-import axios from "axios";
+import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function AddMachine() {
   const [name, setName] = useState("");
@@ -9,16 +10,20 @@ export default function AddMachine() {
   const [seuilVib, setSeuilVib] = useState("");
   const navigate = useNavigate();
 
+  const { admin } = useContext(AuthContext); // 👈 token admin
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post("http://localhost:5000/api/machines", {
-      name,
-      seuilTemp,
-      seuilVib
-    })
-      .then(() => navigate("/machines"))
-      .catch(console.error);
+    axios.post(
+      "/machines",
+      { name, seuilTemp, seuilVib },
+      {
+        headers: { "x-auth-token": admin?.token }
+      }
+    )
+    .then(() => navigate("/machines"))
+    .catch(console.error);
   };
 
   return (

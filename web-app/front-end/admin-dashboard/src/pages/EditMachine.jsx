@@ -1,25 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Layout from "../components/Layout";
-import axios from "axios";
+import axios from "../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function EditMachine() {
   const { id } = useParams();
   const [machine, setMachine] = useState({});
   const navigate = useNavigate();
 
+  const { admin } = useContext(AuthContext); // 👈 récupérer token
+
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/machines/${id}`)
-      .then(res => setMachine(res.data))
-      .catch(console.error);
-  }, [id]);
+    axios.get(`/machines/${id}`, {
+      headers: { "x-auth-token": admin?.token },
+    })
+    .then(res => setMachine(res.data))
+    .catch(console.error);
+  }, [id, admin]);
 
   const update = (e) => {
     e.preventDefault();
 
-    axios.put(`http://localhost:5000/api/machines/${id}`, machine)
-      .then(() => navigate("/machines"))
-      .catch(console.error);
+    axios.put(`/machines/${id}`, machine, {
+      headers: { "x-auth-token": admin?.token },
+    })
+    .then(() => navigate("/machines"))
+    .catch(console.error);
   };
 
   return (

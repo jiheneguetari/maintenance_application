@@ -1,15 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Layout from "../components/Layout";
-import axios from "axios";
+import axios from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Technicians() {
   const [techs, setTechs] = useState([]);
 
+  const { admin } = useContext(AuthContext); // 👈 admin token
+
   useEffect(() => {
-    axios.get("http://localhost:5000/api/users")
-      .then(res => setTechs(res.data))
-      .catch(console.error);
-  }, []);
+    axios.get("/users", {
+      headers: { "x-auth-token": admin?.token }
+    })
+    .then(res => setTechs(res.data))
+    .catch(console.error);
+  }, [admin]);
+
+  const deleteTech = (id) => {
+    if (!window.confirm("Supprimer ce technicien ?")) return;
+
+    axios.delete(`/users/${id}`, {
+      headers: { "x-auth-token": admin?.token }
+    })
+    .then(() => setTechs(techs.filter(x => x._id !== id)))
+    .catch(console.error);
+  };
 
   return (
     <Layout>
@@ -42,12 +57,4 @@ export default function Technicians() {
       </table>
     </Layout>
   );
-
-  function deleteTech(id) {
-    if (!window.confirm("Supprimer ce technicien ?")) return;
-
-    axios.delete(`http://localhost:5000/api/users/${id}`)
-      .then(() => setTechs(techs.filter(x => x._id !== id)))
-      .catch(console.error);
-  }
 }
