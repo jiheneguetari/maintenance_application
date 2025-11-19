@@ -40,8 +40,13 @@ router.post("/login", async (req, res) => {
 
 // GET all users
 router.get("/", async (req, res) => {
-  const users = await User.find();
-  res.json(users);
+  try {
+    const users = await User.find({ role: { $ne: 'admin' } }).select('-password'); 
+    res.json(users);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des utilisateurs:", error);
+    res.status(500).json({ msg: "Erreur serveur interne" });
+  }
 });
 
 // DELETE

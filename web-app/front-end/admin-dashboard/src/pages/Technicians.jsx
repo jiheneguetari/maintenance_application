@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 export default function Technicians() {
   const [techs, setTechs] = useState([]);
 
-  const { admin } = useContext(AuthContext); // 👈 admin token
+  const { admin } = useContext(AuthContext); // admin token
 
   useEffect(() => {
     axios.get("/users", {
