@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
-const AlertSchema = new mongoose.Schema({
-  machineName: String,
-  type: String,     // Température | Vibration
-  value: Number,
-  status: { type: String, default: "Nouveau" },
+const alertSchema = new mongoose.Schema({
+  temperature: { type: Number, required: true },
+  vibration: Number,
+  machineId: { type: String, required: true },
+  message: String,
+  status: { type: String, default: "active" },
   date: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("Alert", AlertSchema);
+module.exports = mongoose.model("Alert", alertSchema);

@@ -1,17 +1,24 @@
 const express = require("express");
 const Alert = require("../models/Alert");
+
 const router = express.Router();
 
-// GET all alerts
+// Get all alerts
 router.get("/", async (req, res) => {
-  const alerts = await Alert.find();
+  const alerts = await Alert.find().sort({ date: -1 });
   res.json(alerts);
 });
 
-// POST new alert
-router.post("/", async (req, res) => {
-  const alert = await Alert.create(req.body);
+// Get alert by ID
+router.get("/:id", async (req, res) => {
+  const alert = await Alert.findById(req.params.id);
   res.json(alert);
+});
+
+// Update alert status
+router.put("/:id", async (req, res) => {
+  const updated = await Alert.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updated);
 });
 
 module.exports = router;

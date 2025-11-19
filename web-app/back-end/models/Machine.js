@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
-const MachineSchema = new mongoose.Schema({
+const machineSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  seuilTemp: { type: Number, required: true },
-  seuilVib: { type: Number, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
+  seuilTemp: { type: Number, required: true },   // ajouté
+  seuilVib: { type: Number, required: true },    // ajouté
+  lastTemperature: Number,
+  lastVibration: Number,
+  status: { type: String, default: "normal" }
+}, { timestamps: true });
 
-module.exports = mongoose.model("Machine", MachineSchema);
+module.exports = mongoose.model("Machine", machineSchema);
