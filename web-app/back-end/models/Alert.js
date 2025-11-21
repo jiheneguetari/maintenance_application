@@ -1,10 +1,24 @@
 const mongoose = require("mongoose");
 
 const alertSchema = new mongoose.Schema({
-    temperature: { type: Number, required: true },
-    vibration: { type: String, required: true },
-    machineId: { type: String, default: "Machine-01" },
-    message: { type: String, required: true },
+    machineId: { type: String, required: true },
+
+    type: { 
+        type: String, 
+        enum: ["temperature", "vibration"], 
+        required: true 
+    },
+
+    value: { type: Number, required: true },
+
+    status: {
+        type: String,
+        enum: ["active", "en_cours", "resolue", "ignoree"],
+        default: "active"
+    },
+
+    message: { type: String },
+
     date: { type: Date, default: Date.now }
 });
 
