@@ -32,7 +32,7 @@ export default function AddMachine() {
 
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow w-96">
 
-        <label className="block mb-3">Nom machine</label>
+        <label className="block mb-3">ID machine</label>
         <input className="border p-2 w-full mb-4" value={name}
                onChange={(e) => setName(e.target.value)} />
 

@@ -26,7 +26,7 @@ String serverUrl = "http://192.168.1.11:5000/api/alerts/esp";
 void setup() {
   Serial.begin(115200);
   dht.begin();
-  pinMode(VIBRATION_PIN, INPUT_PULLUP);
+  pinMode(VIBRATION_PIN, INPUT);
 
   WiFi.begin(ssid, password);
   Serial.print("Connexion WiFi");
@@ -51,7 +51,8 @@ void loop() {
     vibrationCount = 0;
     lastTime = millis();
   }
-
+Serial.println(digitalRead(VIBRATION_PIN));
+delay(100);
   // ----- TEMPERATURE -----
   float temperature = dht.readTemperature();
   if (isnan(temperature)) {

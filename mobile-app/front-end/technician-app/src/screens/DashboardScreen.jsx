@@ -58,7 +58,6 @@ const MachineCard = React.memo(({ item, navigation }) => {
 
             <View style={styles.content}>
                 
-                {/* Température */}
                 <View style={styles.row}>
                     <Ionicons name="thermometer-outline" size={18} color={isTempAlert ? '#B91C1C' : '#2563EB'} /> {/* Rouge si alerte locale */}
                     <Text style={styles.label}>Température :</Text>
@@ -68,7 +67,6 @@ const MachineCard = React.memo(({ item, navigation }) => {
                     <Text style={styles.threshold}>({item.seuilTemp}°C)</Text>
                 </View>
 
-                {/* Vibration */}
                 <View style={styles.row}>
                     <Ionicons name="pulse-outline" size={18} color={isVibAlert ? '#B91C1C' : '#10B981'} /> {/* Rouge si alerte locale */}
                     <Text style={styles.label}>Vibration :</Text>
