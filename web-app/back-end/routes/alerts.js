@@ -83,7 +83,9 @@ router.post("/esp", async (req, res) => {
 
     return res.json({
       success: true,
-      msg: "Données reçues ✔",
+      msg: "Données reçues",
+      seuilTemp: machine.seuilTemp,
+      seuilVib: machine.seuilVib,
       alerts: alerts.length ? alerts : "Aucune nouvelle alerte"
     });
 

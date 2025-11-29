@@ -125,7 +125,6 @@ export default function Alerts() {
       </div>
       
 
-      {/* Affichage des états de chargement et d'erreur */}
       {isLoading && (
         <div className="text-center p-12 bg-red-50 rounded-xl shadow-inner mt-6">
           <Loader2 className="w-10 h-10 text-red-600 animate-spin mx-auto mb-4" />
@@ -140,7 +139,6 @@ export default function Alerts() {
         </div>
       )}
       
-      {/* Tableau des alertes */}
       {!isLoading && !error && alerts.length === 0 ? (
         <div className="text-center p-12 border-4 border-dashed border-gray-200 bg-white rounded-xl mt-8">
           <p className="text-2xl text-gray-500 font-light">🎉 Aucune alerte active à afficher.</p>

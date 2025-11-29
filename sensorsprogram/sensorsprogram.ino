@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <DHT.h>
+#include <ArduinoJson.h>
 
 // ----- DHT22 -----
 #define DHTPIN 4
@@ -13,20 +14,25 @@ int lastState = HIGH;
 unsigned long lastTime = 0;
 int vibrationCount = 0;
 
+// ----- LED -----
+#define LED_PIN 2   // LED pour signaler alerte
+
 // ----- WIFI -----
 const char* ssid = "Joujou";
 const char* password = "20022002";
 
-// ID unique pour cette machine
+// Machine ID
 String machineId = "MACHINE-CNC-02";
 
-// ----- BACKEND -----
-String serverUrl = "http://192.168.1.11:5000/api/alerts/esp";
+// ----- Backend -----
+String serverUrl = "http://192.168.1.13:5000/api/alerts/esp";
+
 
 void setup() {
   Serial.begin(115200);
   dht.begin();
   pinMode(VIBRATION_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
 
   WiFi.begin(ssid, password);
   Serial.print("Connexion WiFi");
@@ -37,6 +43,7 @@ void setup() {
   }
   Serial.println("\n WiFi connecté !");
 }
+
 
 void loop() {
 
@@ -51,8 +58,7 @@ void loop() {
     vibrationCount = 0;
     lastTime = millis();
   }
-Serial.println(digitalRead(VIBRATION_PIN));
-delay(100);
+
   // ----- TEMPERATURE -----
   float temperature = dht.readTemperature();
   if (isnan(temperature)) {
@@ -62,8 +68,11 @@ delay(100);
   }
 
   envoyerDonnees(temperature, vibrationValue);
+
   delay(3000);
 }
+
+
 
 void envoyerDonnees(float temperature, int vibrationValue) {
 
@@ -76,7 +85,7 @@ void envoyerDonnees(float temperature, int vibrationValue) {
   http.begin(serverUrl);
   http.addHeader("Content-Type", "application/json");
 
-  // JSON propre envoyé au backend
+  // JSON envoyé au backend
   String json = "{";
   json += "\"machineId\":\"" + machineId + "\",";
   json += "\"temperature\":" + String(temperature) + ",";
@@ -89,7 +98,30 @@ void envoyerDonnees(float temperature, int vibrationValue) {
   Serial.println("Code HTTP : " + String(code));
 
   if (code > 0) {
-    Serial.println("Réponse backend : " + http.getString());
+    String response = http.getString();
+    Serial.println("Réponse backend : " + response);
+
+    // --- PARSER JSON ---
+    StaticJsonDocument<512> doc;
+    DeserializationError err = deserializeJson(doc, response);
+
+    if (!err) {
+      float seuilTemp = doc["seuilTemp"];
+      float seuilVib  = doc["seuilVib"];
+
+      Serial.println("Seuil Temp = " + String(seuilTemp));
+      Serial.println("Seuil Vib = " + String(seuilVib));
+
+      // ----- GESTION LED -----
+      if (temperature > seuilTemp || vibrationValue > seuilVib) {
+        digitalWrite(LED_PIN, HIGH);   // dépasse seuil → LED ON
+      } else {
+        digitalWrite(LED_PIN, LOW);    // normal → LED OFF
+      }
+
+    } else {
+      Serial.println("Erreur parsing JSON !");
+    }
   }
 
   http.end();
